@@ -1,0 +1,2 @@
+cd .\PythonProjects\Markos\
+.\.venv\Scripts\Activate.ps1
