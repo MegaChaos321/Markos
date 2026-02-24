@@ -49,4 +49,24 @@ class MarkdownBackend(ABC):
     def new_par_line(self, line: str):
         pass
     #:
+
+    @abstractmethod
+    def open_list(self):
+        pass
+    #:
+
+    @abstractmethod
+    def close_list(self):
+        pass
+    #:
+
+    @abstractmethod
+    def open_list_item(self):
+        pass
+    #:
+
+    @abstractmethod
+    def close_list_item(self):
+        pass
+    #:
 #:

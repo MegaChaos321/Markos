@@ -42,7 +42,7 @@ class HTMLBackend(MarkdownBackend):
             out.write(f'<title>{title}</title>')
         #:
         if self._style_sheet:
-            out.write(f'<link rel="stylesheet" media="all" type="text/css" src="{self._style_sheet}"')
+            out.write(f'<link rel="stylesheet" media="all" type="text/css" src="{self._style_sheet}">')
         #:
         out.write('</head><body>')
     #:
@@ -80,5 +80,25 @@ class HTMLBackend(MarkdownBackend):
     @override
     def new_par_line(self, line: str):
         self._out.write(f' {line}')
+    #:
+
+    @override
+    def open_list(self):
+        self._out.write(f'<ul>')
+    #:
+
+    @override
+    def close_list(self):
+        self._out.write(f'</ul>')
+    #:
+
+    @override
+    def open_list_item(self):
+        self._out.write(f'<li>')
+    #:
+
+    @override
+    def close_list_item(self):
+        self._out.write(f'</li>')
     #:
 #:

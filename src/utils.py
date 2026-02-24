@@ -26,7 +26,8 @@ def prettify_html(html_code: str | TextIO, indent = 2) -> str:
 #:
 
 def rewind_one_line(in_: TextIO, line: str):
-    n_chars = len(line.encode()) + 2 # '+ 1' accounts for the removed '\n'
+    # linhas com acentos são lidos com 2 espaços extra
+    n_chars = len(line.encode()) + 1 # '+ 1' accounts for the removed '\n'
     in_.seek(in_.tell() - n_chars, 0)
 #:
 
