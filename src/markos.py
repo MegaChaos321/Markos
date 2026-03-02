@@ -15,7 +15,8 @@ from contextlib import closing
 from docopt import docopt
 
 # from markdown_compiler0 import MarkdownCompiler
-from markdown_compiler1 import MarkdownCompiler
+# from markdown_compiler1 import MarkdownCompiler
+from markdown_compiler2 import MarkdownCompiler
 from html_backend import HTMLBackend
 from utils import from_file_or_stdin, to_file_or_stdout
 
@@ -67,6 +68,7 @@ def main():
     except Exception as ex:
         print(f"An error has ocurred:\n{ex.args}\n\n")
         raise ex
+    #:
 #:
 
 if __name__ == '__main__':

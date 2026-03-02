@@ -26,17 +26,16 @@ def prettify_html(html_code: str | TextIO, indent = 2) -> str:
 #:
 
 def rewind_one_line(in_: TextIO, line: str):
-    # linhas com acentos são lidos com 2 espaços extra
     n_chars = len(line.encode()) + 1 # '+ 1' accounts for the removed '\n'
     in_.seek(in_.tell() - n_chars, 0)
 #:
 
 def from_file_or_stdin(file_path: str | None) -> TextIO:
-    return open(file_path, 'rt') if file_path else sys.stdin
+    return open(file_path, 'rt', encoding='UTF-8') if file_path else sys.stdin
 #:
 
 def to_file_or_stdout(file_path: str | None) -> TextIO:
-    return open(file_path, 'wt') if file_path else sys.stdout
+    return open(file_path, 'wt', encoding='UTF-8') if file_path else sys.stdout
 #:
 
 def matches(pattern: re.Pattern, line: str) -> bool:

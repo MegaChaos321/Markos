@@ -5,45 +5,140 @@
     <meta contents="IE-edge" http-equiv="X-UA-Compatible"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>
-      Este é o meu título
+      Teste 1
     </title>
   </head>
   <body>
     <h1>
-      Heading de Nível 1
+      Parte 1
     </h1>
     <p>
-      Este é o primeiro parágrafo de teste logo após o heading principal.
+      Primeiro parágrafo desta parte. Este é um parágrafo médio. Lorem ipsum dolor sit amet consectetur adipisicing elit. Est blanditiis incidunt, asperiores error suscipit quas odio! Perferendis, commodi. Vel beatae sapiente, sed autem excepturi temporibus sunt enim ducimus voluptate quaerat eligendi distinctio nihil assumenda dolores similique fuga! Possimus, dolorum consectetur?
+    </p>
+    <p>
+      Outro parágrafo pequeno: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam sapiente architecto blanditiis iure ullam hic!
     </p>
     <h2>
-      Heading de Nível 2
+      Parte 1.1
     </h2>
     <p>
-      Um parágrafo intermediário para conferir o espaçamento vertical entre diferentes níveis.
+      Outro parágrafo pequeno: Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quibusdam sapiente architecto blanditiis iure ullam hic!
     </p>
-    <h3>
-      Heading de Nível 3
-    </h3>
     <p>
-      Texto de suporte para verificar a hierarquia visual e o peso da fonte.
+      Aqui fica um link "inline": [simulador de Markdown](http://daringfireball.net/projects/markdown/dingus "Dingus")
     </p>
-    <h4>
-      Heading de Nível 4
-    </h4>
     <p>
-      Mais uma amostra de parágrafo aqui, testando a legibilidade em níveis inferiores.
+      Agora vem um link em parágrafo à parte:
     </p>
-    <h5>
-      Heading de Nível 5
-    </h5>
     <p>
-      Quase no fim da hierarquia, útil para testar estilos de documentos mais densos.
+      [lápis azul](https://twitter.com/ "Twitter - The Unofficial Censor ")
     </p>
-    <h6>
-      Heading de Nível 6
-    </h6>
     <p>
-      O último nível de heading disponível na sintaxe padrão do Markdown
+      A seguir vem a *Parte 1.2*. Eis como introduzir uma sub-secção em **Markdown**:
+    </p>
+    <p>
+      \## Parte 1.2
+    </p>
+    <p>
+      (espero que o __compilador__ não tenha _gerado_ um h2 )
+    </p>
+    <h2>
+      Parte 1.2
+    </h2>
+    <p>
+      Aqui começa o 1o parágrafo da Parte 1.2. No código MD, este parágrafo fica bem coladinho ao título da secção.
+    </p>
+    <h1>
+      Parte 2 [DuckDuckGo](https://duckduckgo.com "DuckDuckGo: Alternativa ao Google")
+    </h1>
+    <p>
+      Nesta parte tratamos de listas
+    </p>
+    <h2>
+      Parte 2.1
+    </h2>
+    <p>
+      A seguir NÃO vem uma lista no dingus do Daring Fireball, mas VEM num dos previews do VS Code e no código gerado pelo CommonMark:
+    </p>
+    <ul>
+      <li>
+        item 1
+      </li>
+      <li>
+        item 2
+      </li>
+    </ul>
+    <p>
+      Os itens seguintes já vão fazer parte da lista no dingus do Daring Fireball (e nos outros compiladores também) porque estão separados deste parágrafo por uma linha em branco:
+    </p>
+    <ul>
+      <li>
+        <p>
+          item 1
+        </p>
+      </li>
+      <li>
+        <p>
+          item 2
+        </p>
+      </li>
+      <li>
+        <p>
+          item 3
+        </p>
+      </li>
+      <li>
+        <p>
+          item 4
+        </p>
+        <h1>
+          Cabeçalho ainda dentro do item actual (pq está indentado)
+        </h1>
+      </li>
+      <li>
+        <p>
+          item 4.5
+        </p>
+        <p>
+          Parágrafo dentro deste item. Linhas indentadas com 2 a 4 espaços geram
+  um novo parágrafo.
+  No código MD esta frase está chegada à esquerda, não há linha em branco a
+  separá-la da última linha e como tal faz parte do parágrafo dentro deste item.
+  O VS Code preserva as mudanças de linha com br's. Nós vamos ignorar.
+        </p>
+      </li>
+    </ul>
+    <p>
+      Novo parágrafo dentro do item 4 no dingus do Daring Fireball, mas no VS Code e no Common Mark termina a lista. A frase anterior teria que estar indentada com pelo menos dois espaços à esquerda e não apenas um.
+    </p>
+    <ul>
+      <li>
+        item 5
+      </li>
+      <li>
+        item 6 com outro símbolo
+      </li>
+      <li>
+        item 7
+  que continua na linha seguinte
+      </li>
+      <li>
+        item 8 (último item da lista)
+      </li>
+    </ul>
+    <p>
+      este parágrafo chegado ao início marca também o fim da lista anterior
+    </p>
+    <p>
+      agora vem um novo parágrafo
+    </p>
+    <p>
+      -isto não é uma lista  (não há espaço entre o '-' e o prim. car. da lista)
+    </p>
+    <h1>
+    </h1>
+    <p>
+      O '#' anterior marca uma secção sem título. No dingus do DaringFireball é apenas um parágrafo. No VS Code e no CommonMark é um h1 vazio. Em geral, nós vamos seguir o Common Mark.
     </p>
   </body>
 </html>

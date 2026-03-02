@@ -51,12 +51,12 @@ class MarkdownBackend(ABC):
     #:
 
     @abstractmethod
-    def open_list(self):
+    def open_list(self, unordered_list = True):
         pass
     #:
 
     @abstractmethod
-    def close_list(self):
+    def close_list(self, unordered_list = True):
         pass
     #:
 

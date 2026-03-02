@@ -41,14 +41,16 @@ class MarkdownCompiler:
 
     INLINE_TITLE_MARKER = '!'
     INLINE_HEADING_MARKER = '#'
-    INLINE_ULIST_MARKER = '-'
+    INLINE_ULIST_MARKER = '[-*]'
+    INLINE_OLIST_MARKER = r'\d+\.?'
 
     BLANK_LINE = re.compile('[ \t\n\r]*')
     UNINDENT_HEADING_LINE = re.compile(fr'\s?{INLINE_HEADING_MARKER}{"{1,6}"}(\s+.*)?')
     INDENT_HEADING_LINE = re.compile(fr'\s{"{2,}"}{INLINE_HEADING_MARKER}{"{1,6}"}(\s+.*)?')
     UNINDENT_TEXT_LINE = re.compile(r'\s?\S.*')
     INDENT_TEXT_LINE = re.compile(r'\s{2,}\S.*')
-    LIST_ITEM_LINE = re.compile(fr'\s{"{,3}"}{INLINE_ULIST_MARKER}(\s+.*)?')
+    ULIST_ITEM_LINE = re.compile(fr'\s{"{,3}"}{INLINE_ULIST_MARKER}(\s+.*)?')
+    OLIST_ITEM_LINE = re.compile(fr'\s{"{,3}"}{INLINE_OLIST_MARKER}(\s+.*)?')
     TITLE_LINE = re.compile(fr'{INLINE_TITLE_MARKER}.*\S.*{INLINE_TITLE_MARKER}')
 
     def __init__(self, backend: MarkdownBackend):
@@ -85,9 +87,14 @@ class MarkdownCompiler:
             if state is CompilerState.OUTSIDE and self._is_heading_line(line):
                 self._new_heading(line)
             #:
-            elif state is CompilerState.OUTSIDE and matches(self.LIST_ITEM_LINE, line):
+            elif state is CompilerState.OUTSIDE and matches(self.ULIST_ITEM_LINE, line):
                 rewind_one_line(in_, line)
-                self._compile_list(in_)
+                self._compile_list(in_, True)
+                state = CompilerState.NEW_LIST
+            #:
+            elif state is CompilerState.OUTSIDE and matches(self.OLIST_ITEM_LINE, line):
+                rewind_one_line(in_, line)
+                self._compile_list(in_, False)
                 state = CompilerState.NEW_LIST
             #:
             elif state is CompilerState.OUTSIDE and self._is_text_line(line):
@@ -104,10 +111,16 @@ class MarkdownCompiler:
                 self._new_heading(line)
                 state = CompilerState.OUTSIDE
             #:
-            elif state is CompilerState.INSIDE_PAR and matches(self.LIST_ITEM_LINE, line):
+            elif state is CompilerState.INSIDE_PAR and matches(self.ULIST_ITEM_LINE, line):
                 backend.close_par()
                 rewind_one_line(in_, line)
-                self._compile_list(in_)
+                self._compile_list(in_, True)
+                state = CompilerState.NEW_LIST
+            #:
+            elif state is CompilerState.INSIDE_PAR and matches(self.OLIST_ITEM_LINE, line):
+                backend.close_par()
+                rewind_one_line(in_, line)
+                self._compile_list(in_, False)
                 state = CompilerState.NEW_LIST
             #:
             elif state is CompilerState.INSIDE_PAR and self._is_text_line(line):
@@ -121,6 +134,14 @@ class MarkdownCompiler:
                 backend.open_par()
                 backend.new_par_line(line)
                 state = CompilerState.INSIDE_PAR
+            #:
+            elif state is CompilerState.NEW_LIST and matches(self.ULIST_ITEM_LINE, line):
+                rewind_one_line(in_, line)
+                self._compile_list(in_, True)
+            #:
+            elif state is CompilerState.NEW_LIST and matches(self.OLIST_ITEM_LINE, line):
+                rewind_one_line(in_, line)
+                self._compile_list(in_, False)
             #:
             else:
                 assert state is CompilerState.OUTSIDE and matches(self.BLANK_LINE, line), \
@@ -171,14 +192,19 @@ class MarkdownCompiler:
         return ''
     #:
 
-    def _compile_list(self, in_: TextIO):
+    def _compile_list(self, in_: TextIO, unordered_list: bool):
         line = in_.readline()[:-1]
-        assert matches(self.LIST_ITEM_LINE, line), \
-            f'First line not a list item line: |{line}|'
+
+        if unordered_list:
+            assert matches(self.ULIST_ITEM_LINE, line), \
+                f'First line not a list item line: |{line}|'
+        else:
+            assert matches(self.OLIST_ITEM_LINE, line), \
+                f'First line not a list item line: |{line}|'
         
         mkd_list = MarkdownList()
         curr_list_item = mkd_list.add_new_list_item(
-            self._new_list_item_inner_elem(line)
+            self._new_list_item_inner_elem(line, unordered_list)
         )
         
         ListState = Enum('ListState', 'LIST_ITEM MAY_END')
@@ -194,10 +220,27 @@ class MarkdownCompiler:
                 rewind_one_line(in_, line)
                 break
             #:
-            elif state is ListState.LIST_ITEM and matches(self.LIST_ITEM_LINE, line):
-                curr_list_item = mkd_list.add_new_list_item(
-                    self._new_list_item_inner_elem(line)
-                )
+            elif state is ListState.LIST_ITEM and matches(self.ULIST_ITEM_LINE, line):
+                if unordered_list:
+                    curr_list_item = mkd_list.add_new_list_item(
+                        self._new_list_item_inner_elem(line, unordered_list)
+                    )
+                #:
+                else:
+                    rewind_one_line(in_, line)
+                    break
+                #:
+            #:
+            elif state is ListState.LIST_ITEM and matches(self.OLIST_ITEM_LINE, line):
+                if unordered_list:
+                    rewind_one_line(in_, line)
+                    break
+                #:
+                else:
+                    curr_list_item = mkd_list.add_new_list_item(
+                        self._new_list_item_inner_elem(line, unordered_list)
+                    )
+                #:
             #:
             elif state is ListState.LIST_ITEM and matches(self.INDENT_HEADING_LINE, line):
                 curr_list_item.append(self._new_list_item_heading(line))
@@ -208,12 +251,31 @@ class MarkdownCompiler:
             elif state is ListState.LIST_ITEM and matches(self.BLANK_LINE, line):
                 state = ListState.MAY_END
             #:
-            elif state is ListState.MAY_END and matches(self.LIST_ITEM_LINE, line):
-                curr_list_item = mkd_list.add_new_list_item(
-                    self._new_list_item_inner_elem(line)
-                )
-                mkd_list.with_paragraphs = True
-                state = ListState.LIST_ITEM
+            elif state is ListState.MAY_END and matches(self.ULIST_ITEM_LINE, line):
+                if unordered_list:
+                    curr_list_item = mkd_list.add_new_list_item(
+                        self._new_list_item_inner_elem(line, unordered_list)
+                    )
+                    mkd_list.with_paragraphs = True
+                    state = ListState.LIST_ITEM
+                #:
+                else:
+                    rewind_one_line(in_, line)
+                    break
+                #:
+            #:
+            elif state is ListState.MAY_END and matches(self.OLIST_ITEM_LINE, line):
+                if unordered_list:
+                    rewind_one_line(in_, line)
+                    break
+                #:
+                else:
+                    curr_list_item = mkd_list.add_new_list_item(
+                        self._new_list_item_inner_elem(line, unordered_list)
+                    )
+                    mkd_list.with_paragraphs = True
+                    state = ListState.LIST_ITEM
+                #:
             #:
             elif state is ListState.MAY_END and matches(self.INDENT_HEADING_LINE, line):
                 curr_list_item.append(self._new_list_item_heading(line))
@@ -236,12 +298,18 @@ class MarkdownCompiler:
             #:
         #:
 
-        self._compile_markdown_list(mkd_list)
+        self._compile_markdown_list(mkd_list, unordered_list)
         # self.__dump_markdown_list(mkd_list)
     #:
 
-    def _new_list_item_inner_elem(self, initial_line: str) -> ListItemInnerElem:
-        line = initial_line.strip()[1:]     # remove list marker
+    def _new_list_item_inner_elem(self, initial_line: str, unordered_list: bool) -> ListItemInnerElem:
+        if unordered_list:
+            line = initial_line.strip()[1:]     # remove list marker
+        #:
+        else:
+            line = initial_line.strip()
+            line = line[line.find(' '):]
+        #:
         if self._is_heading_line(line):
             return self._new_list_item_heading(line)
         #:
@@ -253,13 +321,13 @@ class MarkdownCompiler:
         return ListItemHeading(line, level)
     #:
 
-    def _compile_markdown_list(self, mkd_list: MarkdownList):
+    def _compile_markdown_list(self, mkd_list: MarkdownList, unordered_list: bool):
         backend = self._backend
-        backend.open_list()
+        backend.open_list(unordered_list)
         for list_item in mkd_list:
             self._compile_list_item(list_item, mkd_list.with_paragraphs)
         #:
-        backend.close_list()
+        backend.close_list(unordered_list)
     #:
 
     def _compile_list_item(self, list_item: ListItem, with_paragraphs: bool):

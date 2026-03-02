@@ -1,30 +1,23 @@
-!Elemento Inventado de Teste!
-Só sucede com pelo menos uma linha em branco
+!Test3!
+Test3 só é título se for sucedido por pelo menos uma linha em branco.
 
-# Título Principal (Heading 1)
-Este é o parágrafo inicial, ideal para verificar o recuo e o espaçamento padrão do seu renderizador logo após o primeiro cabeçalho.
-
-- Primeiro item da lista
+- item A
   # HEADING X
-  Parágrafo na lista
-- # Segundo item da lista
+  outro bloco do item A
+- # item B
 
-- Terceiro item da lista
+- item C
 
-Outro paragrafo
+Outro parágrafo fora  de qq lista.
 
-- Item lista
-  Linha 1 lista
-  Linha 2 lista
+- item 1
+  linha 1 to item 1
+  linha 2 to item 1
 
  # HEADING Y
-- Item
+- item 1 ou 2 (depende da indentação do HEADING Y)
 
-## Título Secundário (Heading 2)
-Aqui temos mais um parágrafo para observar como o texto se comporta quando cercado por diferentes elementos estruturais. 
-
-Este segundo parágrafo serve para validar se o espaçamento entre blocos de texto está consistente e visualmente agradável no seu projeto.
-
-- Mais um Item
+- item 3
   # HEADING Z
-  
+
+

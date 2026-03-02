@@ -83,13 +83,23 @@ class HTMLBackend(MarkdownBackend):
     #:
 
     @override
-    def open_list(self):
-        self._out.write(f'<ul>')
+    def open_list(self, unordered_list = True):
+        if unordered_list:
+            self._out.write(f'<ul>')
+        #:
+        else:
+            self._out.write(f'<ol>')
+        #:
     #:
 
     @override
-    def close_list(self):
-        self._out.write(f'</ul>')
+    def close_list(self, unordered_list = True):
+        if unordered_list:
+            self._out.write(f'</ul>')
+        #:
+        else:
+            self._out.write(f'</ol>')
+        #:
     #:
 
     @override
