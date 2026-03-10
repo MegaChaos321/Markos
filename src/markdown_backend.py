@@ -69,4 +69,24 @@ class MarkdownBackend(ABC):
     def close_list_item(self):
         pass
     #:
+
+    @abstractmethod
+    def open_bold(self, text: str) -> str:
+        pass
+    #:
+
+    @abstractmethod
+    def close_bold(self, text: str) -> str:
+        pass
+    #:
+
+    @abstractmethod
+    def open_italic(self, text: str) -> str:
+        pass
+    #:
+
+    @abstractmethod
+    def close_italic(self, text: str) -> str:
+        pass
+    #:
 #:

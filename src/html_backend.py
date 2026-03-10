@@ -111,4 +111,24 @@ class HTMLBackend(MarkdownBackend):
     def close_list_item(self):
         self._out.write(f'</li>')
     #:
+
+    @override
+    def open_bold(self, text: str) -> str:
+        return '<strong>' + text
+    #:
+
+    @override
+    def close_bold(self, text: str) -> str:
+        return text + '</strong>'
+    #:
+
+    @override
+    def open_italic(self, text: str) -> str:
+        return '<em>' + text
+    #:
+
+    @override
+    def close_italic(self, text: str) -> str:
+        return text + '</em>'
+    #:
 #:

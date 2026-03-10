@@ -43,8 +43,6 @@ class MarkdownCompiler:
     INLINE_HEADING_MARKER = '#'
     INLINE_ULIST_MARKER = '[-*]'
     INLINE_OLIST_MARKER = r'\d+\.?'
-    INLINE_APATTERN_MARKER = r'\*'
-    INLINE_UPATTERN_MARKER = '_'
 
     BLANK_LINE = re.compile('[ \t\n\r]*')
     UNINDENT_HEADING_LINE = re.compile(fr'\s?{INLINE_HEADING_MARKER}{"{1,6}"}(\s+.*)?')
@@ -54,27 +52,6 @@ class MarkdownCompiler:
     ULIST_ITEM_LINE = re.compile(fr'\s{"{,3}"}{INLINE_ULIST_MARKER}(\s+.*)?')
     OLIST_ITEM_LINE = re.compile(fr'\s{"{,3}"}{INLINE_OLIST_MARKER}(\s+.*)?')
     TITLE_LINE = re.compile(fr'{INLINE_TITLE_MARKER}.*\S.*{INLINE_TITLE_MARKER}')
-
-    BOLD_A_PATTERN = re.compile(
-        fr'(?<!{INLINE_APATTERN_MARKER}){INLINE_APATTERN_MARKER}{"{2}"}'
-        fr'(?!\s)(.+?)(?<!\s){INLINE_APATTERN_MARKER}{"{2}"}'
-        fr'(?!{INLINE_APATTERN_MARKER})'
-    )
-    BOLD_U_PATTERN = re.compile(
-        fr'(?<![a-zA-Z0-9{INLINE_UPATTERN_MARKER}]){INLINE_UPATTERN_MARKER}{"{2}"}(?!\s)'
-        fr'(.+?)(?<!\s){INLINE_UPATTERN_MARKER}{"{2}"}'
-        fr'(?![a-zA-Z0-9{INLINE_UPATTERN_MARKER}])'
-    )
-    ITALIC_A_PATTERN = re.compile(
-        fr'(?<!{INLINE_APATTERN_MARKER}){INLINE_APATTERN_MARKER}(?!\s)'
-        fr'(.+?)(?<!\s){INLINE_APATTERN_MARKER}'
-        fr'(?!{INLINE_APATTERN_MARKER})'
-    )
-    ITALIC_U_PATTERN = re.compile(
-        fr'(?<![a-zA-Z0-9{INLINE_UPATTERN_MARKER}]){INLINE_UPATTERN_MARKER}(?!\s)'
-        fr'(.+?)(?<!\s){INLINE_UPATTERN_MARKER}'
-        fr'(?![a-zA-Z0-9{INLINE_UPATTERN_MARKER}])'
-    )
 
     def __init__(self, backend: MarkdownBackend):
         self._backend = backend
@@ -122,7 +99,6 @@ class MarkdownCompiler:
             #:
             elif state is CompilerState.OUTSIDE and self._is_text_line(line):
                 backend.open_par()
-                line = self._compile_inline(line)
                 backend.new_par_line(line)
                 state = CompilerState.INSIDE_PAR
             #:
@@ -148,7 +124,6 @@ class MarkdownCompiler:
                 state = CompilerState.NEW_LIST
             #:
             elif state is CompilerState.INSIDE_PAR and self._is_text_line(line):
-                line = self._compile_inline(line)
                 backend.new_par_line(line)
             #:
             elif state is CompilerState.NEW_LIST and matches(self.UNINDENT_HEADING_LINE, line):
@@ -157,7 +132,6 @@ class MarkdownCompiler:
             #:
             elif state is CompilerState.NEW_LIST and matches(self.UNINDENT_TEXT_LINE, line):
                 backend.open_par()
-                line = self._compile_inline(line)
                 backend.new_par_line(line)
                 state = CompilerState.INSIDE_PAR
             #:
@@ -182,7 +156,6 @@ class MarkdownCompiler:
         backend = self._backend
         text, level = self._parse_heading(line_with_markers)
         backend.open_heading(level)
-        text = self._compile_inline(text)
         backend.new_text_line(text)
         backend.close_heading(level)
     #:
@@ -340,13 +313,11 @@ class MarkdownCompiler:
         if self._is_heading_line(line):
             return self._new_list_item_heading(line)
         #:
-        line = self._compile_inline(line)
         return ListItemBlock(line)
     #:
 
     def _new_list_item_heading(self, line_with_markers: str) -> ListItemHeading:
         line, level = self._parse_heading(line_with_markers)
-        line = self._compile_inline(line)
         return ListItemHeading(line, level)
     #:
 
@@ -401,33 +372,5 @@ class MarkdownCompiler:
                 print(repr(inner_elem))
             #:
         #:
-    #:
-
-    def _compile_inline(self, line: str) -> str:
-        result = self._handle_bold(line)
-        result = self._handle_italic(result)
-        return result
-    #:
-
-    def _handle_bold(self, line: str) -> str:
-        backend = self._backend
-        result = self._apply_style(line, self.BOLD_A_PATTERN, backend.open_bold, backend.close_bold)
-        return self._apply_style(result, self.BOLD_U_PATTERN, backend.open_bold, backend.close_bold)
-    #:
-
-    def _handle_italic(self, line: str) -> str:
-        backend = self._backend
-        result = self._apply_style(line, self.ITALIC_A_PATTERN, backend.open_italic, backend.close_italic)
-        return self._apply_style(result, self.ITALIC_U_PATTERN, backend.open_italic, backend.close_italic)
-    #:
-
-    def _apply_style(self, line: str, re_pattern, open_func, close_func) -> str:
-        parts = re_pattern.split(line)
-        if len(parts) > 1:
-            for i in range(1,len(parts), 2):
-                parts[i] = close_func(open_func(parts[i]))
-            #:
-        #:
-        return "".join(parts)
     #:
 #:
