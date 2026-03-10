@@ -89,4 +89,14 @@ class MarkdownBackend(ABC):
     def close_italic(self, text: str) -> str:
         pass
     #:
+
+    @abstractmethod
+    def new_link(self, text: str, url: str, title: str) -> str:
+        pass
+    #:
+
+    @abstractmethod
+    def new_image(self, text: str, url: str, title: str) -> str:
+        pass
+    #:
 #:

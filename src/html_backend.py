@@ -131,4 +131,16 @@ class HTMLBackend(MarkdownBackend):
     def close_italic(self, text: str) -> str:
         return text + '</em>'
     #:
+
+    @override
+    def new_link(self, text: str, url: str, title: str) -> str:
+        title_attr = f' title="{title}"' if title else ""
+        return f'<a href="{url}"{title_attr}>{text}</a>'
+    #:
+
+    @override
+    def new_image(self, text: str, url: str, title: str) -> str:
+        title_attr = f' title="{title}"' if title else ""
+        return f'<img src="{url}" alt="{text}"{title_attr}/>'
+    #:
 #:

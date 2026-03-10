@@ -75,6 +75,8 @@ class MarkdownCompiler:
         fr'(.+?)(?<!\s){INLINE_UPATTERN_MARKER}'
         fr'(?![a-zA-Z0-9{INLINE_UPATTERN_MARKER}])'
     )
+    LINK_PATTERN = re.compile(r'(?<!\!)\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)')
+    IMAGE_PATTERN = re.compile(r'\!\[(.*?)\]\((.*?)(?:\s+"(.*?)")?\)')
 
     def __init__(self, backend: MarkdownBackend):
         self._backend = backend
@@ -404,7 +406,8 @@ class MarkdownCompiler:
     #:
 
     def _compile_inline(self, line: str) -> str:
-        result = self._handle_bold(line)
+        result = self._handle_media(line)
+        result = self._handle_bold(result)
         result = self._handle_italic(result)
         return result
     #:
@@ -421,11 +424,32 @@ class MarkdownCompiler:
         return self._apply_style(result, self.ITALIC_U_PATTERN, backend.open_italic, backend.close_italic)
     #:
 
+    def _handle_media(self, line: str) -> str:
+        backend = self._backend
+        result = self._apply_media(line, self.IMAGE_PATTERN, backend.new_image)
+        return self._apply_media(result, self.LINK_PATTERN, backend.new_link)
+    #:
+
     def _apply_style(self, line: str, re_pattern, open_func, close_func) -> str:
         parts = re_pattern.split(line)
         if len(parts) > 1:
             for i in range(1,len(parts), 2):
                 parts[i] = close_func(open_func(parts[i]))
+            #:
+        #:
+        return "".join(parts)
+    #:
+
+    def _apply_media(self, line: str, re_pattern, new_func) -> str:
+        parts = re_pattern.split(line)
+        if len(parts) > 1:
+            for i in range(1,len(parts), 4):
+                if parts[i+2] is None:
+                    parts[i+2] = ''
+                #:
+                parts[i] = new_func(parts[i].strip(), parts[i+1].strip(), parts[i+2])
+                parts[i+1] = ''
+                parts[i+2] = ''
             #:
         #:
         return "".join(parts)

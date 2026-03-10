@@ -49,16 +49,43 @@
       </strong>
     </h2>
     <p>
-      Um link [SiteA](http://siteA.com "O site A") e outro [SiteB](http://siteB.com "O site B") na mesma linha! Outro link: [SiteA](http://siteC.com)! Ainda outro link: [SiteD]()!
+      Um link
+      <a href="http://siteA.com" title="O site A">
+        SiteA
+      </a>
+      e outro
+      <a href="http://siteB.com" title="O site B">
+        SiteB
+      </a>
+      na mesma linha! Outro link:
+      <a href="http://siteC.com">
+        SiteA
+      </a>
+      ! Ainda outro link:
+      <a href="">
+        SiteD
+      </a>
+      !
     </p>
     <h1>
-      Um cabeçalho com link: [SiteB](http://siteB.com "O site B")! Fim do cabeçalho
+      Um cabeçalho com link:
+      <a href="http://siteB.com" title="O site B">
+        SiteB
+      </a>
+      ! Fim do cabeçalho
     </h1>
     <p>
-      Uma imagem: ![Imagem1](http://imagens/imagem1.png) Outra: ![Imagem2](http://imagens/imagem2.png)  Outra imagem: ![](http://imagens/imagem3.png "Esta é a imagem 3")
+      Uma imagem:
+      <img alt="Imagem1" src="http://imagens/imagem1.png"/>
+      Outra:
+      <img alt="Imagem2" src="http://imagens/imagem2.png"/>
+      Outra imagem:
+      <img alt="" src="http://imagens/imagem3.png" title="Esta é a imagem 3"/>
     </p>
     <p>
-      Duas imagens coladas: ![Imagem4](http://imagens/imagem4.png)![Imagem5](http://imagens/imagem5.png)
+      Duas imagens coladas:
+      <img alt="Imagem4" src="http://imagens/imagem4.png"/>
+      <img alt="Imagem5" src="http://imagens/imagem5.png"/>
     </p>
     <h2>
       Em Listas
@@ -92,7 +119,9 @@
         <strong>
           item
         </strong>
-        [link4](http://siteLink4.com)
+        <a href="http://siteLink4.com">
+          link4
+        </a>
         <em>
           fim
         </em>
