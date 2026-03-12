@@ -99,4 +99,9 @@ class MarkdownBackend(ABC):
     def new_image(self, text: str, url: str, title: str) -> str:
         pass
     #:
+
+    @abstractmethod
+    def escape_raw_text(self, text: str) -> str:
+        pass
+    #:
 #:

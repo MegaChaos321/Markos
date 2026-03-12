@@ -18,6 +18,7 @@ from docopt import docopt
 # from markdown_compiler1 import MarkdownCompiler
 from markdown_compiler2 import MarkdownCompiler
 from html_backend import HTMLBackend
+from latex_backend import LaTeXBackend
 from utils import from_file_or_stdin, to_file_or_stdout
 
 ################################################################################################################
@@ -33,24 +34,31 @@ def main():
     Markos is Markdown converter. It converts from Simplified Markdown to HTML.
 
     Usage:
-        {sys.argv[0]} [-s STYLE_SHEET] [-p] [INPUT_FILE] [OUTPUT_FILE]
+        {sys.argv[0]} [-s STYLE_SHEET] [-p] [-l] [INPUT_FILE] [OUTPUT_FILE]
 
     Options:
     INPUT_FILE          Markdown source file. Default: stdin
     OUTPUT_FILE         Output source file. Default: stdout
     -h, --help          This help
     -p, --pretty        Prettify HTML output
+    -l, --latex         Switch output format to LaTeX (default: HTML)
     -s STYLE_SHEET, --style-sheet=STYLE_SHEET   Use this STYLE_SHEET
 """
     
     args = docopt(dedent(doc))
     style_sheet = args['--style-sheet']
     pretty_print = args['--pretty']
+    latex = args['--latex']
 
     try:
         in_file = from_file_or_stdin(args['INPUT_FILE'])
         out_file = to_file_or_stdout(args['OUTPUT_FILE'])
-        backend = HTMLBackend(out_file, style_sheet, pretty_print)
+        if latex:
+            backend = LaTeXBackend(out_file)
+        #:
+        else:
+            backend = HTMLBackend(out_file, style_sheet, pretty_print)
+        #:
 
         with in_file, out_file, closing(backend):
             mkd_compiler = MarkdownCompiler(backend)

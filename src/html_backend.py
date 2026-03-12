@@ -114,22 +114,22 @@ class HTMLBackend(MarkdownBackend):
 
     @override
     def open_bold(self, text: str) -> str:
-        return '<strong>' + text
+        return fr'<strong>{text}'
     #:
 
     @override
     def close_bold(self, text: str) -> str:
-        return text + '</strong>'
+        return f'{text}</strong>'
     #:
 
     @override
     def open_italic(self, text: str) -> str:
-        return '<em>' + text
+        return f'<em>{text}'
     #:
 
     @override
     def close_italic(self, text: str) -> str:
-        return text + '</em>'
+        return f'{text}</em>'
     #:
 
     @override
@@ -142,5 +142,14 @@ class HTMLBackend(MarkdownBackend):
     def new_image(self, text: str, url: str, title: str) -> str:
         title_attr = f' title="{title}"' if title else ""
         return f'<img src="{url}" alt="{text}"{title_attr}/>'
+    #:
+
+    # Falha se tiver o prettify ligado
+    @override
+    def escape_raw_text(self, text: str) -> str:
+        result = text.replace('&', r'&amp;')
+        result = result.replace('<', r'&lt;')
+        result = result.replace('>', r'&gt;')
+        return result
     #:
 #:

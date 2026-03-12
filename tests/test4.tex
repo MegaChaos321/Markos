@@ -1,0 +1,55 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\hypersetup{pdftitle={Test4}}
+\title{Test4}
+\date{}
+\begin{document}
+\maketitle
+Esta linha tem texto com \textbf{negritos} e \textit{itálicos}. Mais \textbf{negrito} e \textit{itálico}.Outra linha deste \textbf{parágrafo} para testar compilação de \textit{elementos em linha}.  Uma linha sem elementos em linha como negritos e itálicos.
+
+\section*{Um \textit{cabeçalho}}
+\subsection*{Outro \textbf{cabeçalho}}
+Um link \href{http://siteA.com}{SiteA} e outro \href{http://siteB.com}{SiteB} na mesma linha!Outro link: \href{http://siteC.com}{SiteA}!Ainda outro link: \href{}{SiteD}!
+
+\section*{Um cabeçalho com link: \href{http://siteB.com}{SiteB}! Fim do cabeçalho}
+Uma imagem: \begin{figure}[h!]
+  \centering
+  \includegraphics[draft, width=\textwidth]{http://imagens/imagem1.png}
+  \caption{Imagem1}
+\end{figure}
+ Outra: \begin{figure}[h!]
+  \centering
+  \includegraphics[draft, width=\textwidth]{http://imagens/imagem2.png}
+  \caption{Imagem2}
+\end{figure}
+ Outra imagem: \begin{figure}[h!]
+  \centering
+  \includegraphics[draft, width=\textwidth]{http://imagens/imagem3.png}
+\end{figure}
+
+
+Duas imagens coladas: \begin{figure}[h!]
+  \centering
+  \includegraphics[draft, width=\textwidth]{http://imagens/imagem4.png}
+  \caption{Imagem4}
+\end{figure}
+\begin{figure}[h!]
+  \centering
+  \includegraphics[draft, width=\textwidth]{http://imagens/imagem5.png}
+  \caption{Imagem5}
+\end{figure}
+
+
+\subsection*{Em Listas}
+\begin{itemize}
+\item  item1\subsubsection*{Um \textbf{cabeçalho} dentro de um item de lista}
+
+\item \subsection*{item \textit{2}}
+
+\item  item \textit{3}
+\item  \textbf{item} \href{http://siteLink4.com}{link4} \textit{fim}
+\end{itemize}
+\end{document}

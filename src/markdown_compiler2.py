@@ -124,8 +124,7 @@ class MarkdownCompiler:
             #:
             elif state is CompilerState.OUTSIDE and self._is_text_line(line):
                 backend.open_par()
-                line = self._compile_inline(line)
-                backend.new_par_line(line)
+                self._compile_inline(line, backend.new_par_line)
                 state = CompilerState.INSIDE_PAR
             #:
             elif state is CompilerState.INSIDE_PAR and matches(self.BLANK_LINE, line):
@@ -150,8 +149,7 @@ class MarkdownCompiler:
                 state = CompilerState.NEW_LIST
             #:
             elif state is CompilerState.INSIDE_PAR and self._is_text_line(line):
-                line = self._compile_inline(line)
-                backend.new_par_line(line)
+                self._compile_inline(line, backend.new_par_line)
             #:
             elif state is CompilerState.NEW_LIST and matches(self.UNINDENT_HEADING_LINE, line):
                 self._new_heading(line)
@@ -159,8 +157,7 @@ class MarkdownCompiler:
             #:
             elif state is CompilerState.NEW_LIST and matches(self.UNINDENT_TEXT_LINE, line):
                 backend.open_par()
-                line = self._compile_inline(line)
-                backend.new_par_line(line)
+                self._compile_inline(line, backend.new_par_line)
                 state = CompilerState.INSIDE_PAR
             #:
             elif state is CompilerState.NEW_LIST and matches(self.ULIST_ITEM_LINE, line):
@@ -184,8 +181,7 @@ class MarkdownCompiler:
         backend = self._backend
         text, level = self._parse_heading(line_with_markers)
         backend.open_heading(level)
-        text = self._compile_inline(text)
-        backend.new_text_line(text)
+        self._compile_inline(text, backend.new_text_line)
         backend.close_heading(level)
     #:
 
@@ -328,7 +324,6 @@ class MarkdownCompiler:
         #:
 
         self._compile_markdown_list(mkd_list, unordered_list)
-        # self.__dump_markdown_list(mkd_list)
     #:
 
     def _new_list_item_inner_elem(self, initial_line: str, unordered_list: bool) -> ListItemInnerElem:
@@ -342,13 +337,11 @@ class MarkdownCompiler:
         if self._is_heading_line(line):
             return self._new_list_item_heading(line)
         #:
-        line = self._compile_inline(line)
         return ListItemBlock(line)
     #:
 
     def _new_list_item_heading(self, line_with_markers: str) -> ListItemHeading:
         line, level = self._parse_heading(line_with_markers)
-        line = self._compile_inline(line)
         return ListItemHeading(line, level)
     #:
 
@@ -380,36 +373,30 @@ class MarkdownCompiler:
         backend = self._backend
         if with_paragraphs:
             backend.open_par()
-            backend.new_par_line(str(block))
+            self._compile_inline(str(block), backend.new_par_line)
             backend.close_par()
         #:
         else:
-            backend.new_par_line(str(block))
+            self._compile_inline(str(block), backend.new_par_line)
     #:
 
     @_compile_list_item_inner_elem.register
     def _(self, heading: ListItemHeading, *_):
         backend = self._backend
         backend.open_heading(heading.level)
-        backend.new_text_line(str(heading))
+        self._compile_inline(str(heading), backend.new_text_line)
         backend.close_heading(heading.level)
     #:
 
-    def __dump_markdown_list(self, mkd_list: MarkdownList):
-        print("MARKDOWN LIST")
-        for list_item in mkd_list:
-            print("LIST ITEM")
-            for inner_elem in list_item:
-                print(repr(inner_elem))
-            #:
-        #:
-    #:
+    def _compile_inline(self, line: str, new_line):
+        backend = self._backend
+        result = backend.escape_raw_text(line)
 
-    def _compile_inline(self, line: str) -> str:
-        result = self._handle_media(line)
+        result = self._handle_media(result)
         result = self._handle_bold(result)
         result = self._handle_italic(result)
-        return result
+
+        new_line(result)
     #:
 
     def _handle_bold(self, line: str) -> str:
@@ -434,7 +421,7 @@ class MarkdownCompiler:
         parts = re_pattern.split(line)
         if len(parts) > 1:
             for i in range(1,len(parts), 2):
-                parts[i] = close_func(open_func(parts[i]))
+                parts[i] = close_func(open_func(parts[i].strip()))
             #:
         #:
         return "".join(parts)

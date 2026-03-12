@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\hypersetup{pdftitle={Teste 1}}
+\title{Teste 1}
+\date{}
+\begin{document}
+\maketitle
+\section*{Parte 1}
+Primeiro parágrafo desta parte. Este é um parágrafo médio. Lorem ipsum dolor sitamet consectetur adipisicing elit. Est blanditiis incidunt, asperiores errorsuscipit quas odio! Perferendis, commodi. Vel beatae sapiente, sed autemexcepturi temporibus sunt enim ducimus voluptate quaerat eligendi distinctionihil assumenda dolores similique fuga! Possimus, dolorum consectetur?
+
+Outro parágrafo pequeno: Lorem ipsum dolor sit, amet consectetur adipisicingelit. Quibusdam sapiente architecto blanditiis iure ullam hic!
+
+\subsection*{Parte 1.1}
+Outro parágrafo pequeno: Lorem ipsum dolor sit, amet consectetur adipisicingelit. Quibusdam sapiente architecto blanditiis iure ullam hic!
+
+Aqui fica um link "inline": \href{http://daringfireball.net/projects/markdown/dingus}{simulador de Markdown}
+
+Agora vem um link em parágrafo à parte:
+
+\href{https://twitter.com/}{lápis azul}
+
+A seguir vem a \textit{Parte 1.2}. Eis como introduzir uma sub-secção em \textbf{Markdown}:
+
+\textbackslash{}\#\# Parte 1.2
+
+(espero que o \textbf{compilador} não tenha \textit{gerado} um h2 )
+
+\subsection*{Parte 1.2}
+Aqui começa o 1o parágrafo da Parte 1.2. No código MD, este parágrafo fica bemcoladinho ao título da secção.
+
+\section*{Parte 2 \href{https://duckduckgo.com}{DuckDuckGo}}
+Nesta parte tratamos de listas
+
+\subsection*{Parte 2.1}
+A seguir NÃO vem uma lista no dingus do Daring Fireball, mas VEM num dospreviews do VS Code e no código gerado pelo CommonMark:
+
+\begin{itemize}
+\item  item 1
+\item  item 2
+\end{itemize}
+Os itens seguintes já vão fazer parte da lista no dingus do Daring Fireball(e nos outros compiladores também) porque estão separados deste parágrafopor uma linha em branco:
+
+\begin{itemize}
+\item  item 1
+
+
+\item  item 2
+
+
+\item  item 3
+
+
+\item  item 4
+
+\section*{Cabeçalho ainda dentro do item actual (pq está indentado)}
+
+\item  item 4.5
+
+  Parágrafo dentro deste item. Linhas indentadas com 2 a 4 espaços geram
+  um novo parágrafo.
+  No código MD esta frase está chegada à esquerda, não há linha em branco a
+  separá-la da última linha e como tal faz parte do parágrafo dentro deste item.
+  O VS Code preserva as mudanças de linha com br's. Nós vamos ignorar.
+
+
+\end{itemize}
+Novo parágrafo dentro do item 4 no dingus do Daring Fireball, mas no VS Codee no Common Mark termina a lista. A frase anterior teria que estar indentada compelo menos dois espaços à esquerda e não apenas um.
+
+\begin{itemize}
+\item  item 5
+\item  item 6 com outro símbolo
+\item  item 7
+  que continua na linha seguinte
+\item  item 8 (último item da lista)
+\end{itemize}
+este parágrafo chegado ao início marca também o fim da lista anterior
+
+agora vem um novo parágrafo
+
+-isto não é uma lista  (não há espaço entre o '-' e o prim. car. da lista)
+
+\section*{}
+O '\#' anterior marca uma secção sem título. No dingus do DaringFireball éapenas um parágrafo. No VS Code e no CommonMark é um h1 vazio. Em geral,nós vamos seguir o Common Mark.\end{document}
