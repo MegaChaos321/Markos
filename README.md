@@ -54,7 +54,7 @@ input. The output is rendered either to a given output file or to standard
 output. Command line syntax for calling Markos is:
 
 ```
-    markos.py [-s STYLE_SHEET] [-p] [INPUT_FILE] [OUTPUT_FILE]
+    markos.py [-s STYLE_SHEET] [-p] [-l] [INPUT_FILE] [OUTPUT_FILE]
 ```
 
 Use `markos --help` to get a summary of options. 
