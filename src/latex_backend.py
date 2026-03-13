@@ -171,6 +171,7 @@ class LaTeXBackend(MarkdownBackend):
         ]
         for old, new in replacements:
             text = text.replace(old, new)
+        #:
         return text
     #:
 #:
