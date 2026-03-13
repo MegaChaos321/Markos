@@ -104,7 +104,7 @@ Performance
 
 TBD...
 
-Authors
+Author
 -------
 
 Márcio Santos
