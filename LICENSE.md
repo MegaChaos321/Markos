@@ -1,6 +1,7 @@
 MIT License
 
 Copyright 2022-2024 João Galamba
+Copyright (c) 2026 MegaChaos321
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
